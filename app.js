@@ -137,6 +137,7 @@ function switchMode() {
   beep();
   if (isFocus) {
     nextQuote();
+    showRandomPokemon();
     if (Notification.permission === 'granted') {
       new Notification('集中セッション完了！', {
         body: '25分お疲れさん！5分休憩してや。',
@@ -147,7 +148,7 @@ function switchMode() {
     isFocus = false;
     timeLeft = BREAK_TIME;
   } else {
-
+    hidePokemon();
     isFocus = true;
     timeLeft = FOCUS_TIME;
   }
@@ -186,6 +187,7 @@ function reset() {
   timeLeft = FOCUS_TIME;
   sessionCount = 0;
   totalFocusSeconds = 0;
+  hidePokemon();
   render();
 }
 
@@ -193,6 +195,26 @@ function skip() {
   clearInterval(intervalId);
   isRunning = false;
   switchMode();
+}
+
+const TOTAL_POKEMON = 1025;
+
+async function showRandomPokemon() {
+  const id = Math.floor(Math.random() * TOTAL_POKEMON) + 1;
+  try {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    const data = await res.json();
+    const sprite = data.sprites.other['official-artwork'].front_default
+      || data.sprites.front_default;
+    const name = data.name;
+    document.getElementById('pokemonSprite').src = sprite;
+    document.getElementById('pokemonName').textContent = name;
+    document.getElementById('pokemonCard').style.display = 'flex';
+  } catch (_) {}
+}
+
+function hidePokemon() {
+  document.getElementById('pokemonCard').style.display = 'none';
 }
 
 if ('Notification' in window && Notification.permission === 'default') {
