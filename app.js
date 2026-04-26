@@ -125,12 +125,6 @@ function beep() {
 
 function nextQuote() {
   currentQuoteIdx = (currentQuoteIdx + 1) % shuffled.length;
-  const card = document.getElementById('quoteCard');
-  card.style.opacity = '0';
-  setTimeout(() => {
-    setQuote(currentQuoteIdx);
-    card.style.opacity = '1';
-  }, 400);
 }
 
 function switchMode() {
@@ -264,15 +258,15 @@ const CUTE_POKEMON = [
 async function showRandomPokemon(mode) {
   const list = mode === 'focus' ? SCARY_POKEMON : CUTE_POKEMON;
   const id = list[Math.floor(Math.random() * list.length)];
-  const label = mode === 'focus' ? 'と一緒に集中するで！' : 'が癒しに来たで！';
+  const q = shuffled[currentQuoteIdx % shuffled.length];
   try {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const data = await res.json();
     const sprite = data.sprites.other['official-artwork'].front_default
       || data.sprites.front_default;
     document.getElementById('pokemonSprite').src = sprite;
-    document.getElementById('pokemonName').textContent = data.name;
-    document.getElementById('pokemonLabel').textContent = label;
+    document.getElementById('quoteText').textContent = `"${q.text}"`;
+    document.getElementById('quoteAuthor').textContent = q.author;
     const card = document.getElementById('pokemonCard');
     card.style.opacity = '0';
     card.style.display = 'flex';
@@ -294,5 +288,4 @@ skipBtn.addEventListener('click', skip);
 
 ringFill.style.strokeDasharray = CIRCUMFERENCE;
 ringFill.style.strokeDashoffset = 0;
-setQuote(currentQuoteIdx);
 render();
