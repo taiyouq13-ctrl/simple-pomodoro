@@ -137,6 +137,12 @@ function switchMode() {
   beep();
   if (isFocus) {
     nextQuote();
+    if (Notification.permission === 'granted') {
+      new Notification('集中セッション完了！', {
+        body: '25分お疲れさん！5分休憩してや。',
+        icon: 'https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/72x72/1f345.png',
+      });
+    }
     sessionCount++;
     isFocus = false;
     timeLeft = BREAK_TIME;
@@ -187,6 +193,10 @@ function skip() {
   clearInterval(intervalId);
   isRunning = false;
   switchMode();
+}
+
+if ('Notification' in window && Notification.permission === 'default') {
+  Notification.requestPermission();
 }
 
 startBtn.addEventListener('click', () => isRunning ? pause() : start());
