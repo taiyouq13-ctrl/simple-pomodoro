@@ -137,20 +137,20 @@ function switchMode() {
   beep();
   if (isFocus) {
     nextQuote();
-    showRandomPokemon();
+    sessionCount++;
+    isFocus = false;
+    timeLeft = BREAK_TIME;
+    showRandomPokemon('break');
     if (Notification.permission === 'granted') {
       new Notification('集中セッション完了！', {
         body: '25分お疲れさん！5分休憩してや。',
         icon: 'https://cdn.jsdelivr.net/npm/twemoji@14.0.2/assets/72x72/1f345.png',
       });
     }
-    sessionCount++;
-    isFocus = false;
-    timeLeft = BREAK_TIME;
   } else {
-    hidePokemon();
     isFocus = true;
     timeLeft = FOCUS_TIME;
+    showRandomPokemon('focus');
   }
   render();
 }
@@ -169,6 +169,9 @@ function tick() {
 }
 
 function start() {
+  if (!isRunning && document.getElementById('pokemonCard').style.display === 'none') {
+    showRandomPokemon(isFocus ? 'focus' : 'break');
+  }
   isRunning = true;
   intervalId = setInterval(tick, 1000);
   render();
@@ -197,19 +200,83 @@ function skip() {
   switchMode();
 }
 
-const TOTAL_POKEMON = 1025;
+const SCARY_POKEMON = [
+  94,  // Gengar
+  6,   // Charizard
+  130, // Gyarados
+  150, // Mewtwo
+  229, // Houndoom
+  248, // Tyranitar
+  354, // Banette
+  359, // Absol
+  373, // Salamence
+  445, // Garchomp
+  452, // Drapion
+  472, // Gliscor
+  477, // Dusknoir
+  487, // Giratina
+  491, // Darkrai
+  609, // Chandelure
+  625, // Bisharp
+  635, // Hydreigon
+  681, // Aegislash
+  717, // Yveltal
+  727, // Incineroar
+  768, // Golisopod
+  861, // Grimmsnarl
+  887, // Dragapult
+  998, // Baxcalibur
+];
 
-async function showRandomPokemon() {
-  const id = Math.floor(Math.random() * TOTAL_POKEMON) + 1;
+const CUTE_POKEMON = [
+  25,  // Pikachu
+  35,  // Clefairy
+  39,  // Jigglypuff
+  113, // Chansey
+  133, // Eevee
+  134, // Vaporeon
+  175, // Togepi
+  183, // Marill
+  196, // Espeon
+  209, // Snubbull
+  231, // Phanpy
+    242, // Blissey
+  300, // Skitty
+  417, // Pachirisu
+  427, // Buneary
+  440, // Happiny
+  468, // Togekiss
+  531, // Audino
+  572, // Minccino
+  587, // Emolga
+  682, // Spritzee
+  685, // Slurpuff
+  700, // Sylveon
+  702, // Dedenne
+  764, // Comfey
+  829, // Gossifleur
+  831, // Wooloo
+  868, // Milcery
+  869, // Alcremie
+  926, // Fidough
+];
+
+async function showRandomPokemon(mode) {
+  const list = mode === 'focus' ? SCARY_POKEMON : CUTE_POKEMON;
+  const id = list[Math.floor(Math.random() * list.length)];
+  const label = mode === 'focus' ? 'と一緒に集中するで！' : 'が癒しに来たで！';
   try {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
     const data = await res.json();
     const sprite = data.sprites.other['official-artwork'].front_default
       || data.sprites.front_default;
-    const name = data.name;
     document.getElementById('pokemonSprite').src = sprite;
-    document.getElementById('pokemonName').textContent = name;
-    document.getElementById('pokemonCard').style.display = 'flex';
+    document.getElementById('pokemonName').textContent = data.name;
+    document.getElementById('pokemonLabel').textContent = label;
+    const card = document.getElementById('pokemonCard');
+    card.style.opacity = '0';
+    card.style.display = 'flex';
+    setTimeout(() => { card.style.opacity = '1'; }, 50);
   } catch (_) {}
 }
 

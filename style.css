@@ -5,11 +5,11 @@
 }
 
 :root {
-  --focus-color: #e63946;
-  --focus-dark: #c1121f;
-  --break-color: #2dc653;
-  --break-dark: #208b3a;
-  --accent: #ff6b6b;
+  --focus-color: #9b00ff;
+  --focus-dark: #ff003c;
+  --break-color: #ff6fd8;
+  --break-dark: #00e5ff;
+  --accent: #ff003c;
 }
 
 body {
@@ -18,9 +18,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0d0d0d;
+  background: #1a0a2e;
   overflow: hidden;
   transition: background 0.8s ease;
+}
+
+body.break {
+  background: #1a0a2e;
 }
 
 /* Orbs */
@@ -32,6 +36,10 @@ body {
   filter: blur(80px);
   opacity: 0.35;
   transition: background 0.8s ease, transform 1.5s ease;
+}
+
+.orb {
+  opacity: 0.5;
 }
 
 .orb1 {
@@ -52,14 +60,14 @@ body {
   width: 300px; height: 300px;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  background: #ff9f1c;
-  opacity: 0.12;
+  background: #ff6a00;
+  opacity: 0.2;
   animation: drift3 10s ease-in-out infinite alternate;
 }
 
 body.break .orb1 { background: var(--break-color); }
 body.break .orb2 { background: var(--break-dark); }
-body.break .orb3 { background: #a8dadc; }
+body.break .orb3 { background: #ffe066; opacity: 0.25; }
 
 @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 40px); } }
 @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-50px, -30px); } }
@@ -105,7 +113,7 @@ body.break .orb3 { background: #a8dadc; }
 
 body.break .mode-dot {
   background: var(--break-color);
-  box-shadow: 0 0 8px var(--break-color);
+  box-shadow: 0 0 12px var(--break-color);
 }
 
 @keyframes pulse-dot {
@@ -171,7 +179,8 @@ body.break .ring-fill {
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 20px;
   padding: 12px 24px 12px 12px;
-  animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.4s ease;
+  animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes pop-in {
